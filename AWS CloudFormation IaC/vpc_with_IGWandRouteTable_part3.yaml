@@ -78,16 +78,16 @@ Resources:
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
-    Tags:
-      - Key: Name
-        Value: MyVPC-IGW
+      Tags:
+        - Key: Name
+          Value: MyVPC-IGW
 
   #Attach Gateway
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref MyVPC
-      InternetGatewayId: InternetGateway
+      InternetGatewayId: !Ref InternetGateway
 
   #Route Table
   PublicRouteTable:
