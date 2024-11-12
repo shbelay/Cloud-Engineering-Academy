@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'IAM Group CloudFormation Template'
+
+Resources:
+  IaCGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: IaC-Group
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
