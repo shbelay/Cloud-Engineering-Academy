@@ -120,7 +120,7 @@ Resources:
     Properties:
       InstanceType: t2.micro
       KeyName: bastion
-      ImageId: ami-063d43db0594b521b
+      ImageId: ami-0fae88c1e6794aa17
       SubnetId: !Ref PublicSubnet1A
       SecurityGroupIds:
         - !Ref BastionSG
@@ -146,7 +146,7 @@ Resources:
     Properties:
       InstanceType: t2.micro
       KeyName: bastion
-      ImageId: ami-063d43db0594b521b
+      ImageId: ami-0fae88c1e6794aa17
       SubnetId: !Ref AppPrivateSubnet1A
       SecurityGroupIds:
         - !Ref AppInstance1ASG
@@ -160,7 +160,7 @@ Resources:
     Properties:
       InstanceType: t2.micro
       KeyName: bastion
-      ImageId: ami-063d43db0594b521b
+      ImageId: ami-0fae88c1e6794aa17
       SubnetId: !Ref AppPrivateSubnet2B
       SecurityGroupIds:
         - !Ref AppInstance2BSG
