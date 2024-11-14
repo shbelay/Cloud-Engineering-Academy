@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create User, Add User to Group and Attach Policy, Create Role and Policy for Service'
+
+Resources:
+  #User Creation
+  IaCUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: 'IaCuser'
+      LoginProfile:
+        Password: IaCUserPassword123!
+        PasswordResetRequired: false
+
+  #Group Creation
+  IaCGroup:
+    Type: 'AWS::IAM::Group'
+    Properties:
+      GroupName: 'IaCgroup'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess'
+
+  #Attach User to Group
+  UserToGroup:
+    Type: 'AWS::IAM::UserToGroupAddition'
+    Properties:
+      GroupName: !Ref IaCGroup
+      Users:
+        - !Ref IaCUser
+
+  #IAM Role for EC2
+  IaCRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: ['ec2.amazonaws.com']
+            Action: ['sts:AssumeRole']
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/PowerUserAccess'
+
+  #S3 Custom Policy
+  IaCPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: 'CustomPolicy'
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - "s3:GetObject"
+            Resource: '*'
+      Roles:
+        - !Ref IaCRole
