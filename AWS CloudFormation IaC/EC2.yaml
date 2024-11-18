@@ -198,3 +198,4 @@ Resources:
           systemctl start httpd
           systemctl enable httpd
           echo "Hello from My Web Server 2B" > /var/www/html/index.html
+
