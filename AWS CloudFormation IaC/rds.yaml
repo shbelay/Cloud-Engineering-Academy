@@ -1,15 +1,74 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Create RDS Instance'
+# This CloudFormation template defines an AWS Virtual Private Cloud (VPC) resource.
+#
+# Resources:
+#   MyVPC:
+#     Type: "AWS::EC2::VPC"
+#     Properties:
+#       CidrBlock: "10.0.0.0/16"
+#         Specifies the IP address range for the VPC in CIDR notation.
+#       EnableDnsSupport: true
+#         Indicates whether the DNS resolution is supported for the VPC.
+#       EnableDnsHostnames: true
+#         Indicates whether the instances launched in the VPC get DNS hostnames.
+#       Tags:
+#         - Key: Name
+#           Value: "MyVPC"
+#             Assigns a name tag to the VPC for easier identification.
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Create RDS Instance"
 
 Resources:
-  MyDB:
-    Type: 'AWS::RDS::DBInstance'
+  MyVPC:
+    Type: "AWS::EC2::VPC"
     Properties:
-      DBInstanceIdentifier: 'MyNewRDS'
-      MasterUsername: 'admin'
-      MasterUserPassword: 'password'
-      DBInstanceClass: 'db.t3.micro'
-      Engine: 'mysql'
-      EngineVersion: '8.0.35'
-      AllocatedStorage: '20'
+      CidrBlock: "10.0.0.0/16"
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: "MyVPC"
+
+  MySubnet1:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "10.0.1.0/24"
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "MySubnet1"
+
+  #added another subnet to meet the availability zone requirement
+  MySubnet2:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "10.0.2.0/24"
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "MySubnet2"
+
+  #added a subnet group for the RDS instance
+  MyDBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "Subnet group for RDS instance"
+      SubnetIds:
+        - !Ref MySubnet1
+        - !Ref MySubnet2
+  #added a security group for the RDS instance
+  MyDB:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBInstanceIdentifier: "my-new-rds"
+      MasterUsername: "admin"
+      MasterUserPassword: "password"
+      DBInstanceClass: "db.t3.micro"
+      Engine: "mysql"
+      EngineVersion: "8.0.35"
+      AllocatedStorage: 20
       BackupRetentionPeriod: 7
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
